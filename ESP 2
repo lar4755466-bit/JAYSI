@@ -1,0 +1,14 @@
+-- โหลดและรันสคริปต์จาก URL
+local url = "loadstring(game:HttpGet("https://raw.githubusercontent.com/lar4755466-bit/JAYSI/refs/heads/main/esp.lan"))()"
+
+-- ตรวจสอบว่าใช้ environment ที่รองรับ loadstring หรือ load
+local success, err = pcall(function()
+    local scriptContent = game:HttpGet(url)
+    loadstring(scriptContent)()
+end)
+
+if success then
+    print("Script loaded and executed successfully!")
+else
+    warn("Failed to load script: "..err)
+end

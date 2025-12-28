@@ -1,0 +1,370 @@
+local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
+local Window = WindUI:CreateWindow({
+    Title = "JAYSI",
+    Icon = "user", -- lucide icon. optional
+    Author = "BLIND SPOT", -- optional
+})
+
+Window:SetBackgroundImage("rbxassetid://id-here")
+
+Window:EditOpenButton({
+    Title = "Open UI Jaysi",
+    Icon = "play",
+    CornerRadius = UDim.new(0,16),
+    StrokeThickness = 2,
+    Color = ColorSequence.new( -- gradient
+        Color3.fromHex("33CCFF"), 
+        Color3.fromHex("3366FF")
+    ),
+    OnlyMobile = false,
+    Enabled = true,
+    Draggable = true,
+})
+-- INFO
+local Tab = Window:Tab({
+    Title = "INFO",
+    Icon = "user", -- optional
+    Locked = false,
+})
+
+
+---------------------------
+--        MENU   
+---------------------------
+
+
+local Tab1 = Window:Tab({
+    Title = "MENU",
+    Icon = "command", -- optional
+    Locked = false,
+})
+
+
+    -- ปุ่มกดใช้ --
+
+
+local Button = Tab1:Button({
+    Title = "👁️ OPEN-ESP",
+    Desc = "กดเปิดเพื่อมองเห็นว่าเล่นในเกม",
+    Locked = false,
+    Callback = function()
+    loadstring(game:HttpGet("https://rawscripts.net/raw/Blind-Shot-see-all-and-fake-laser-75004"))()
+    end
+})
+
+-- ตัวแปรผู้เล่น
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- ฟังก์ชันเทเลพอร์ต
+local function teleportToPosition(position)
+    local character = LocalPlayer.Character
+    if character then
+        local hrp = character:FindFirstChild("HumanoidRootPart")
+        if hrp then
+            hrp.CFrame = CFrame.new(position)
+        end
+    end
+end
+
+-- ตัวอย่างการใช้งาน
+-- กำหนดพิกัดที่ต้องการไป (X, Y, Z)
+local targetPosition = Vector3.new(77.8, 65, 116.53)
+
+
+local Button = Tab1:Button({
+    Title = "FARM-OBBY",
+    Desc = "กดเปิดเมื่อวาปไปเก็บเงิน",
+    Locked = false,
+    Callback = function()
+teleportToPosition(targetPosition)
+    end
+})
+
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- ฟังก์ชันเพื่อรอให้ตัวละครโหลดครบ
+local function getCharacter()
+    return LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+end
+
+-- เก็บค่าตัวละครเดิม (Anchored + PlatformStand)
+local originalStates = {}
+
+local isFrozen = false
+
+-- ฟังก์ชันเปิด/ปิดยืนแข็ง
+local function setFreeze(state)
+    local character = getCharacter()
+    local hrp = character:WaitForChild("HumanoidRootPart")
+    local humanoid = character:WaitForChild("Humanoid")
+
+    if state then
+        -- เก็บค่าตอนนี้เพื่อคืนค่า
+        if not originalStates.Anchored then
+            originalStates.Anchored = hrp.Anchored
+            originalStates.PlatformStand = humanoid.PlatformStand
+        end
+
+        -- ยืนแข็ง
+        hrp.Anchored = true
+        humanoid.PlatformStand = true
+    else
+        -- คืนค่าเดิม
+        if originalStates.Anchored ~= nil then
+            hrp.Anchored = originalStates.Anchored
+            humanoid.PlatformStand = originalStates.PlatformStand
+            originalStates = {} -- ล้างค่าเก่า
+        end
+    end
+
+    isFrozen = state
+end
+
+-- ตัวอย่างเชื่อม Toggle GUI
+
+local Toggle = Tab1:Toggle({
+    Title = "STANDING-STIFF ",
+    Desc = "กดเปิดเพื่อทำการเย็นนิ่ง",
+    Icon = "power",
+    Type = "Checkbox",
+    Value = false,
+    Callback = function(state) 
+        print("Toggle Activated: " .. tostring(state))
+        setFreeze(state) -- เปิด/ปิดยืนแข็ง
+    end
+})
+
+-- แท็ก --
+
+Window:Tag({
+    Title = "v.1.0.0.2",
+    Icon = "pin",
+    Color = Color3.fromHex("#33CCFF"),
+    Radius = 0, -- from 0 to 13
+})
+
+-- แจ้งเตือน --
+
+WindUI:Notify({
+    Title = "JAYSI",
+    Content = "คุณได้ทำการรันสคริปต์ขึ้นมาแล้ว",
+    Duration = 3, -- 3 seconds
+    Icon = "database",
+})
+
+---------------------------
+--        PLAYER   
+---------------------------
+
+
+local Tab2 = Window:Tab({
+    Title = "PLAYER",
+    Icon = "user", -- optional
+    Locked = false,
+})
+
+
+
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+
+local Slider = Tab2:Slider({  
+    Title = "ความเร็ววิ่ง",  
+    Desc = "ปรับความเร็วของตัวละคร",  
+    Step = 1,  
+    Value = {  
+        Min = 16,  -- ความเร็วต่ำสุด
+        Max = 120, -- ความเร็วสูงสุด
+        Default = 16, -- ความเร็วเริ่มต้น
+    },  
+    Callback = function(value)  
+        -- ตรวจสอบว่าตัวละครและ Humanoid มีอยู่
+        local character = localPlayer.Character
+        if character and character:FindFirstChild("Humanoid") then
+            character.Humanoid.WalkSpeed = value
+        end
+        print("ความเร็วถูกตั้งค่าเป็น: "..value)
+    end  
+})
+
+
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local localPlayer = Players.LocalPlayer
+
+-- ตัวแปรควบคุมระบบ Infinity Jump
+local infinityJumpEnabled = false
+
+-- === Infinity Jump Toggle ===
+local InfinityJumpToggle = Tab2:Slider({
+    Title = "Infinity Jump", 
+    Desc = "กระโดดไม่จำกัด",
+    Step = 1, 
+    Value = {
+        Min = 0,  -- ปิด
+        Max = 120,  -- เปิด
+        Default = 0,
+    },
+    Callback = function(value)
+        if value >= 1 then
+            infinityJumpEnabled = true
+            print("Infinity Jump: เปิด")
+        else
+            infinityJumpEnabled = false
+            print("Infinity Jump: ปิด")
+        end
+    end
+})
+
+-- === ฟังก์ชัน Infinity Jump ===
+UserInputService.JumpRequest:Connect(function()
+    if infinityJumpEnabled then
+        local character = localPlayer.Character
+        if character and character:FindFirstChild("Humanoid") then
+            -- บังคับให้กระโดดได้แม้กลางอากาศ
+            character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+        end
+    end
+end)
+
+-- === ปุ่มรีเซ็ต ===
+local ResetButton = Tab2:Button({
+    Title = "รีเซ็ตตัวละคร",
+    Desc = "กดเพื่อคืนค่าเดิมของการกระโดด",
+    Callback = function()
+        -- ปิด Infinity Jump
+        infinityJumpEnabled = false
+        -- อัปเดต UI Slider ให้เป็น 0
+        InfinityJumpToggle:SetValue(0)
+        print("Infinity Jump ถูกรีเซ็ตและปิดเรียบร้อย")
+    end
+})
+
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local noclip = false
+local noclipConnection
+
+local function setCharacterCollide(state)
+    local char = player.Character
+    if not char then return end
+
+    for _, v in pairs(char:GetDescendants()) do
+        if v:IsA("BasePart") then
+            v.CanCollide = state
+        end
+    end
+end
+
+    ---------------
+      --เดินทะลุ
+    ---------------
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+local noclipConnection
+
+local function setCharacterCollide(state)
+    local char = player.Character
+    if not char then return end
+
+    for _, v in pairs(char:GetDescendants()) do
+        if v:IsA("BasePart") then
+            v.CanCollide = state
+        end
+    end
+end
+
+local Toggle = Tab2:Toggle({
+    Title = "NOCLIP",
+    Desc = "เปิดเพื่อทำการเดินทะลุ",
+    Icon = "power",
+    Type = "Checkbox",
+    Value = false, -- ค่าเริ่มต้น ปิด
+    Callback = function(state)
+
+        if state then
+            -- เปิดเดินทะลุ
+            noclipConnection = RunService.Stepped:Connect(function()
+                setCharacterCollide(false)
+            end)
+            print("Noclip: ON")
+        else
+            -- ปิดเดินทะลุ
+            if noclipConnection then
+                noclipConnection:Disconnect()
+                noclipConnection = nil
+            end
+            setCharacterCollide(true)
+            print("Noclip: OFF")
+        end
+
+    end
+})
+
+------------+
+--ตั้งค่าคีย์บอร์ดกดเปิด ui
+------------+
+
+local Keybind = Tab2:Keybind({
+    Title = "Keybind",
+    Desc = "ตั้งค่าปุ่มเปิดปิด UI จากคีย์บอร์ด",
+    Value = "G",
+    Callback = function(v)
+        Window:SetToggleKey(Enum.KeyCode[v])
+    end
+})
+
+
+local DiscordLink = "https://discord.gg/KD7sQ5g76x"
+
+local Button = Tab:Button({
+    Title = "📌 Join Discord",
+    Desc = "กดเพื่อคัดลอกลิงก์ Discord",
+    Locked = false,
+    Callback = function()
+        -- คัดลอกลิงก์
+        if setclipboard then
+            setclipboard(DiscordLink)
+        elseif toclipboard then
+            toclipboard(DiscordLink)
+        end
+
+        -- แจ้งเตือน
+        WindUI:Notify({
+            Title = "Join Discord สำเร็จ",
+            Content = "คัดลอกลิงก์ Discord แล้ว\nนำไปวางในเบราว์เซอร์ได้เลย",
+            Duration = 3,
+            Icon = "logo-discord",
+        })
+    end
+})
+
+
+local Paragraph = Tab:Paragraph({
+    Title = "อัพเดทโปรใหม่ล่าสุดเปิดให้ใช้ 28/12/2025",
+    Desc = "อัพเดทตัวนี้มาเพื่อให้ทุกคนได้ใช้และเล่นกันอย่างสนุกโปรดใช้อย่างระมัดระวัง",
+    Color = "Blue",
+    Image = "",
+    ImageSize = 30,
+    Thumbnail = "",
+    ThumbnailSize = 80,
+    Locked = false,
+    Buttons = {
+        {
+            Icon = "logo-discord",
+            Title = "Join Discord",
+            Callback = function()
+                print("1 Button")
+            end,
+        }
+    }
+})

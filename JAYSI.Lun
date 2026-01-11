@@ -290,7 +290,7 @@ local Toggle = Tab1:Toggle({
 -- แท็ก --
 
 Window:Tag({
-    Title = "v.1.0.0.2",
+    Title = "v.1.0.0.3",
     Icon = "pin",
     Color = Color3.fromHex("#33CCFF"),
     Radius = 0, -- from 0 to 13

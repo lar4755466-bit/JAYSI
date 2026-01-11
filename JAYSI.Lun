@@ -40,17 +40,167 @@ local Tab1 = Window:Tab({
 })
 
 
-    -- ปุ่มกดใช้ --
+--==============================
+-- ESP TOGGLE STATE
+--==============================
+local ESP_ENABLED = false
+local espConnection
 
-
+--==============================
+-- UI BUTTON
+--==============================
 local Button = Tab1:Button({
     Title = "👁️ OPEN-ESP",
-    Desc = "กดเปิดเพื่อมองเห็นว่าเล่นในเกม",
+    Desc = "กดเพื่อเปิด / ปิด ESP",
     Locked = false,
     Callback = function()
-    loadstring(game:HttpGet("https://rawscripts.net/raw/Blind-Shot-see-all-and-fake-laser-75004"))()
+        ESP_ENABLED = not ESP_ENABLED
+
+        if ESP_ENABLED then
+            startESP()
+        else
+            stopESP()
+        end
     end
 })
+
+--==============================
+-- SERVICES
+--==============================
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+
+local localPlayer = Players.LocalPlayer
+
+--==============================
+-- DATA
+--==============================
+local skinModels = {}
+local lasers = {}
+
+local LASER_COLOR = Color3.fromRGB(255, 0, 0)
+local LASER_WIDTH_SCALE = 1/12.5
+local LASER_HEIGHT_OFFSET = 0.5
+local LASER_SHORTEN = 0.50
+
+--==============================
+-- FUNCTIONS
+--==============================
+local function isHitbox(part)
+    local n = part.Name:lower()
+    if n:find("hitbox") or n == "hb" then
+        return true
+    end
+    if part.Size.Magnitude > 10 then
+        return true
+    end
+    return false
+end
+
+local function fixCharacter(character)
+    for _, obj in ipairs(character:GetDescendants()) do
+        if obj:IsA("BasePart") then
+            if obj.Name ~= "HumanoidRootPart" then
+                if isHitbox(obj) then
+                    obj.Transparency = 1
+                    obj.LocalTransparencyModifier = 1
+                    obj.CanCollide = false
+                else
+                    obj.Transparency = 0
+                    obj.LocalTransparencyModifier = 0
+                end
+            end
+        elseif obj:IsA("Decal") then
+            obj.Transparency = 0
+        end
+    end
+end
+
+local function trackModel(model)
+    if skinModels[model] then return end
+    if model:IsA("Model") and model.Name:lower():sub(1,5) == "skin_" then
+        skinModels[model] = true
+
+        local laser = Instance.new("Part")
+        laser.Anchored = true
+        laser.CanCollide = false
+        laser.Material = Enum.Material.Neon
+        laser.Color = LASER_COLOR
+        laser.Transparency = 0
+        laser.Name = "SkinLaser"
+        laser.Parent = Workspace
+
+        lasers[model] = laser
+    end
+end
+
+local function getBoundingBox(model)
+    local cframe, size
+    pcall(function()
+        cframe, size = model:GetBoundingBox()
+    end)
+    return cframe, size
+end
+
+--==============================
+-- START ESP
+--==============================
+function startESP()
+    for _, obj in ipairs(Workspace:GetDescendants()) do
+        trackModel(obj)
+    end
+
+    espConnection = RunService.RenderStepped:Connect(function()
+        if not ESP_ENABLED then return end
+
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= localPlayer then
+                local character = player.Character
+                if character and character.Parent then
+                    fixCharacter(character)
+                end
+            end
+        end
+
+        for model, _ in pairs(skinModels) do
+            if model.Parent then
+                local laser = lasers[model]
+                if laser then
+                    local cframe, size = getBoundingBox(model)
+                    if cframe and size then
+                        laser.Size = Vector3.new(
+                            size.X * LASER_WIDTH_SCALE,
+                            size.Y * LASER_WIDTH_SCALE,
+                            size.Z - LASER_SHORTEN*2
+                        )
+
+                        local pos = cframe.Position + Vector3.new(0, LASER_HEIGHT_OFFSET, 0)
+                        laser.CFrame = CFrame.new(pos, pos + cframe.LookVector)
+                    end
+                end
+            end
+        end
+    end)
+end
+
+--==============================
+-- STOP ESP
+--==============================
+function stopESP()
+    if espConnection then
+        espConnection:Disconnect()
+        espConnection = nil
+    end
+
+    for _, laser in pairs(lasers) do
+        laser:Destroy()
+    end
+
+    skinModels = {}
+    lasers = {}
+end
+
 
 -- ตัวแปรผู้เล่น
 local Players = game:GetService("Players")
@@ -69,7 +219,7 @@ end
 
 -- ตัวอย่างการใช้งาน
 -- กำหนดพิกัดที่ต้องการไป (X, Y, Z)
-local targetPosition = Vector3.new(77.8, 65, 116.53)
+local targetPosition = Vector3.new(110.48, 76.17, 116.19)
 
 
 local Button = Tab1:Button({
@@ -350,7 +500,7 @@ local Button = Tab:Button({
 
 
 local Paragraph = Tab:Paragraph({
-    Title = "อัพเดทโปรใหม่ล่าสุดเปิดให้ใช้ 28/12/2025 เทส",
+    Title = "อัพเดท 11/1/2026",
     Desc = "อัพเดทตัวนี้มาเพื่อให้ทุกคนได้ใช้และเล่นกันอย่างสนุกโปรดใช้อย่างระมัดระวัง",
     Color = "Blue",
     Image = "",

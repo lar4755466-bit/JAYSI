@@ -1,3 +1,60 @@
+-- ================== LOADING SCREEN ==================
+local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui")
+
+local LoadingGui = Instance.new("ScreenGui")
+LoadingGui.IgnoreGuiInset = true
+LoadingGui.Parent = CoreGui
+
+local Frame = Instance.new("Frame", LoadingGui)
+Frame.Size = UDim2.new(1,0,1,0)
+Frame.BackgroundColor3 = Color3.fromRGB(5, 10, 20)
+
+local Title = Instance.new("TextLabel", Frame)
+Title.Size = UDim2.new(1,0,0,80)
+Title.Position = UDim2.new(0,0,0.4,0)
+Title.BackgroundTransparency = 1
+Title.Text = "JAYSI LOADING"
+Title.Font = Enum.Font.GothamBold
+Title.TextSize = 36
+Title.TextColor3 = Color3.fromRGB(0,170,255)
+
+local BarBG = Instance.new("Frame", Frame)
+BarBG.Size = UDim2.new(0.4,0,0,12)
+BarBG.Position = UDim2.new(0.3,0,0.52,0)
+BarBG.BackgroundColor3 = Color3.fromRGB(20,20,30)
+BarBG.BorderSizePixel = 0
+
+local Bar = Instance.new("Frame", BarBG)
+Bar.Size = UDim2.new(0,0,1,0)
+Bar.BackgroundColor3 = Color3.fromRGB(0,140,255)
+Bar.BorderSizePixel = 0
+
+TweenService:Create(
+    Bar,
+    TweenInfo.new(2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+    {Size = UDim2.new(1,0,1,0)}
+):Play()
+
+task.wait(2.3)
+
+TweenService:Create(
+    Frame,
+    TweenInfo.new(0.6),
+    {BackgroundTransparency = 1}
+):Play()
+
+for _,v in pairs(Frame:GetChildren()) do
+    if v:IsA("TextLabel") or v:IsA("Frame") then
+        TweenService:Create(v, TweenInfo.new(0.6), {Transparency = 1}):Play()
+    end
+end
+
+task.wait(0.7)
+LoadingGui:Destroy()
+-- ================== END LOADING ==================
+
+
 local WindUI = loadstring(game:HttpGet("https://github.com/Footagesus/WindUI/releases/latest/download/main.lua"))()
 local Window = WindUI:CreateWindow({
     Title = "JAYSI",
@@ -499,22 +556,19 @@ local Button = Tab:Button({
 })
 
 
-local Paragraph = Tab:Paragraph({
-    Title = "อัพเดท 11/1/2026",
-    Desc = "อัพเดทตัวนี้มาเพื่อให้ทุกคนได้ใช้และเล่นกันอย่างสนุกโปรดใช้อย่างระมัดระวัง",
+-- PARAGRAPH: แสดงรายการอัพเดทอ่านได้อย่างเดียว
+Tab:Paragraph({
+    Title = "📋 รายการอัพเดท 11/1/2026",
+    Desc = [[
+- 1.แก้บัครันไม่ติด
+- 2.แก้บัค ESP เปิดไม่มอง
+- 3.แก้พิกัด Farm-OFFB
+    ]],
     Color = "Blue",
-    Image = "",
+    Locked = true,       -- ผู้เล่นไม่สามารถแก้ไขหรือคลิกอะไรได้
+    Buttons = {},        -- ไม่มีปุ่มให้กด
+    Image = "",          -- ถ้าอยากใส่รูปสามารถแก้ได้
     ImageSize = 30,
     Thumbnail = "",
     ThumbnailSize = 80,
-    Locked = false,
-    Buttons = {
-        {
-            Icon = "logo-discord",
-            Title = "Join Discord",
-            Callback = function()
-                print("1 Button")
-            end,
-        }
-    }
 })
